@@ -1,0 +1,11 @@
+stacks:
+  - name: '{{env:ENVIRONMENT}}-bryceandryanforeverandever-dot-net'
+
+    capabilities: []
+    parameters:
+      - key: Environment
+        value: '{{env:ENVIRONMENT}}'
+    terminationProtection: true
+
+    policyFile: ./policy.json
+    templateFile: ./template.yaml

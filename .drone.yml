@@ -1,0 +1,63 @@
+---
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: test
+    image: 72636c/stratus:latest-alpine
+    commands:
+      - stratus stage
+      - stratus deploy
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      ENVIRONMENT: test
+    pull: always
+    when:
+      event:
+        - pull_request
+
+  - name: stage
+    image: 72636c/stratus:latest-alpine
+    commands:
+      - stratus stage
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      ENVIRONMENT: prod
+    pull: always
+    when:
+      event:
+        - pull_request
+
+  - name: deploy
+    image: 72636c/stratus:latest-alpine
+    commands:
+      - stratus deploy
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      ENVIRONMENT: prod
+    pull: always
+    when:
+      branch:
+        - master
+      event:
+        - push
+
+---
+kind: signature
+hmac: 0f0d607857e2c8fb269484eef987698b9b47006af8ade611ceeff493cd47cdcb
