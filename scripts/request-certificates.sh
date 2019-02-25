@@ -75,7 +75,7 @@ EOF
   --region 'us-east-1'
 }
 
-# request_certificate 'test.bryceandryanforeverandever.net'
+request_certificate 'test.bryceandryanforeverandever.net'
 request_certificate 'www.test.bryceandryanforeverandever.net'
 
 request_certificate 'bryceandryanforeverandever.net'
