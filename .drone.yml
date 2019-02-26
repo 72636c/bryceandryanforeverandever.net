@@ -60,10 +60,8 @@ steps:
       ENVIRONMENT: prod
     pull: always
     when:
-      branch:
-        - master
       event:
-        - push
+        - pull_request
 
   - name: deploy (prod)
     image: 72636c/stratus:latest-alpine
@@ -95,4 +93,4 @@ steps:
 
 ---
 kind: signature
-hmac: 10d38d396b1767faacf7a2101f778d31d8ad7d6a6635ab295489f8556bdc99b6
+hmac: ec0951bc535aba0f5ee1a5a57a618ab134d5abb92872594717374da51b12993b
