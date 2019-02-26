@@ -6,50 +6,57 @@ platform:
   os: linux
   arch: amd64
 
+x-defaults:
+  environment: &environment
+    AWS_ACCESS_KEY_ID:
+      from_secret: aws_access_key_id
+    AWS_REGION: us-east-1
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: aws_secret_access_key
+
 steps:
-  - name: test
+  - name: stage (test)
     image: 72636c/stratus:latest-alpine
     commands:
       - stratus stage
-      - stratus deploy
     environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
+      <<: *environment
       ENVIRONMENT: test
     pull: always
     when:
       event:
         - pull_request
 
-  - name: stage
+  - name: deploy (test)
     image: 72636c/stratus:latest-alpine
     commands:
-      - stratus stage
+      - stratus deploy
     environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      ENVIRONMENT: prod
+      <<: *environment
+      ENVIRONMENT: test
     pull: always
     when:
       event:
         - pull_request
 
-  - name: deploy
+  - name: sync (test)
+    image: 72636c/aws-cli:1
+    commands:
+      - aws s3 sync naked-bucket s3://test.bryceandryanforeverandever.net
+      - aws s3 sync www-bucket s3://www.test.bryceandryanforeverandever.net
+    environment:
+      <<: *environment
+      ENVIRONMENT: test
+    when:
+      event:
+        - pull_request
+
+  - name: stage (prod)
     image: 72636c/stratus:latest-alpine
     commands:
-      - stratus deploy
+      - stratus stage
     environment:
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_REGION: us-east-1
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
+      <<: *environment
       ENVIRONMENT: prod
     pull: always
     when:
@@ -58,6 +65,34 @@ steps:
       event:
         - push
 
+  - name: deploy (prod)
+    image: 72636c/stratus:latest-alpine
+    commands:
+      - stratus deploy
+    environment:
+      <<: *environment
+      ENVIRONMENT: prod
+    pull: always
+    when:
+      branch:
+        - master
+      event:
+        - push
+
+  - name: sync (prod)
+    image: 72636c/aws-cli:1
+    commands:
+      - aws s3 sync naked-bucket s3://bryceandryanforeverandever.net
+      - aws s3 sync www-bucket s3://www.bryceandryanforeverandever.net
+    environment:
+      <<: *environment
+      ENVIRONMENT: prod
+    when:
+      branch:
+        - master
+      event:
+        - push
+
 ---
 kind: signature
-hmac: 0f0d607857e2c8fb269484eef987698b9b47006af8ade611ceeff493cd47cdcb
+hmac: 10d38d396b1767faacf7a2101f778d31d8ad7d6a6635ab295489f8556bdc99b6
