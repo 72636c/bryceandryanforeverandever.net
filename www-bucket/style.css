@@ -10,8 +10,18 @@ body {
   font-size: 3em;
 }
 
+.alternate {
+  animation: rainbow-swing 0.1s linear 0s infinite reverse;
+}
+
+.centre {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
 .page {
-  animation: background-scroll 1s ease-in-out infinite alternate;
+  animation: background-scroll 1s ease-in-out 0s infinite normal;
   background: linear-gradient(#ff00ff, #00ff00, #ff00ff);
   background-size: 100% 300%;
   color: #ffffff;
@@ -21,20 +31,20 @@ body {
   width: inherit;
 }
 
-.centre {
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-}
-
 .rainbow {
-  animation: rainbow-swing 0.1s linear infinite;
+  animation: rainbow-swing 0.1s linear 0s infinite normal;
   box-sizing: content-box;
   text-overflow: clip;
+  text-shadow: 0 0 +12px rgb(0, 0, 0), 0 +3px 0 rgb(255, 0, 0);
 }
 
-.reverse {
-  animation-direction: reverse;
+@keyframes background-scroll {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 0% 300%;
+  }
 }
 
 @keyframes rainbow-swing {
@@ -67,14 +77,5 @@ body {
       0 +6px 0 rgb(255, 127, 0), 0 +9px 0 rgb(255, 255, 0),
       0 +12px 0 rgb(0, 127, 63), 0 +15px 0 rgb(0, 127, 255),
       0 +18px 0 rgb(0, 63, 127), 0 +21px 0 rgb(63, 63, 127);
-  }
-}
-
-@keyframes background-scroll {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: 0% 300%;
   }
 }
