@@ -39,31 +39,31 @@ body {
 
 @keyframes rainbow-swing {
   0% {
-    text-shadow: 0 0 12px rgb(0, 0, 0), 0 +3px 0 rgb(255, 0, 0),
+    text-shadow: 0 0 +12px rgb(0, 0, 0), 0 +3px 0 rgb(255, 0, 0),
       0 +6px 0 rgb(255, 127, 0), 0 +9px 0 rgb(255, 255, 0),
       0 +12px 0 rgb(0, 127, 63), 0 +15px 0 rgb(0, 127, 255),
       0 +18px 0 rgb(0, 63, 127), 0 +21px 0 rgb(63, 63, 127);
   }
   25% {
-    text-shadow: 0 0 12px rgb(0, 0, 0), +3px 0 0 rgb(255, 0, 0),
+    text-shadow: 0 0 +12px rgb(0, 0, 0), +3px 0 0 rgb(255, 0, 0),
       +6px 0 0 rgb(255, 127, 0), +9px 0 0 rgb(255, 255, 0),
       +12px 0 0 rgb(0, 127, 63), +15px 0 0 rgb(0, 127, 255),
       +18px 0 0 rgb(0, 63, 127), +21px 0 0 rgb(63, 63, 127);
   }
   50% {
-    text-shadow: 0 0 12px rgb(0, 0, 0), 0 -3px 0 rgb(255, 0, 0),
+    text-shadow: 0 0 +12px rgb(0, 0, 0), 0 -3px 0 rgb(255, 0, 0),
       0 -6px 0 rgb(255, 127, 0), 0 -9px 0 rgb(255, 255, 0),
       0 -12px 0 rgb(0, 127, 63), 0 -15px 0 rgb(0, 127, 255),
       0 -18px 0 rgb(0, 63, 127), 0 -21px 0 rgb(63, 63, 127);
   }
   75% {
-    text-shadow: 0 0 12px rgb(0, 0, 0), -3px +3px 0 rgb(255, 0, 0),
+    text-shadow: 0 0 +12px rgb(0, 0, 0), -3px 0 0 rgb(255, 0, 0),
       -6px 0 0 rgb(255, 127, 0), -9px 0 0 rgb(255, 255, 0),
       -12px 0 0 rgb(0, 127, 63), -15px 0 0 rgb(0, 127, 255),
       -18px 0 0 rgb(0, 63, 127), -21px 0 0 rgb(63, 63, 127);
   }
   100% {
-    text-shadow: 0 0 12px rgb(0, 0, 0), 0 +3px 0 rgb(255, 0, 0),
+    text-shadow: 0 0 +12px rgb(0, 0, 0), 0 +3px 0 rgb(255, 0, 0),
       0 +6px 0 rgb(255, 127, 0), 0 +9px 0 rgb(255, 255, 0),
       0 +12px 0 rgb(0, 127, 63), 0 +15px 0 rgb(0, 127, 255),
       0 +18px 0 rgb(0, 63, 127), 0 +21px 0 rgb(63, 63, 127);
