@@ -19,10 +19,6 @@ body {
   font-size: 3em;
 }
 
-.alternate {
-  animation: rainbow-swing 0.1s linear 0s infinite reverse;
-}
-
 .centre {
   display: table-cell;
   text-align: center;
@@ -30,7 +26,7 @@ body {
 }
 
 .page {
-  animation: background-scroll 1s ease-in-out 0s infinite normal;
+  animation: background-scroll 1s ease-in-out 1s infinite alternate;
   background: linear-gradient(#ff00ff, #00ff00, #ff00ff);
   background-size: 100% 300%;
   color: #ffffff;
@@ -40,14 +36,27 @@ body {
   width: inherit;
 }
 
+.page * {
+  padding: 24px;
+  overflow: hidden;
+}
+
 .rainbow {
-  animation: rainbow-swing 0.1s linear 0s infinite normal;
+  animation: fade-in 0.5s linear 0.5s 1 normal forwards,
+    orbit 0.1s linear 1.5s infinite normal,
+    rainbow-swing 0.1s linear 1.5s infinite normal;
   box-sizing: content-box;
-  text-overflow: clip;
+  opacity: 0;
   text-shadow: 0 0 +12px black, 0 +3px 0 var(--electric-red),
     0 +6px 0 var(--dark-orange), 0 +9px 0 var(--canary-yellow),
     0 +12px 0 var(--la-salle-green), 0 +15px 0 var(--blue-ryb),
     0 +18px 0 var(--patriarch);
+}
+
+.rainbow.alternate {
+  animation: fade-in 0s linear 1.5s 1 normal forwards,
+    orbit 0.1s linear 1.5s infinite reverse,
+    rainbow-swing 0.1s linear 1.5s infinite reverse;
 }
 
 @keyframes background-scroll {
@@ -59,6 +68,23 @@ body {
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(6px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(6px) rotate(-360deg);
+  }
+}
 @keyframes rainbow-swing {
   0% {
     text-shadow: 0 0 +12px black, 0 +3px 0 var(--electric-red),
