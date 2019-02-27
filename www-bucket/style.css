@@ -19,12 +19,6 @@ body {
   font-size: 3em;
 }
 
-.alternate {
-  animation: fade-in 0s linear 1.5s 1 normal forwards,
-    orbit 0.1s linear 1.5s infinite reverse,
-    rainbow-swing 0.1s linear 1.5s infinite reverse;
-}
-
 .centre {
   display: table-cell;
   text-align: center;
@@ -53,6 +47,12 @@ body {
     0 +6px 0 var(--dark-orange), 0 +9px 0 var(--canary-yellow),
     0 +12px 0 var(--la-salle-green), 0 +15px 0 var(--blue-ryb),
     0 +18px 0 var(--patriarch);
+}
+
+.rainbow.alternate {
+  animation: fade-in 0s linear 1.5s 1 normal forwards,
+    orbit 0.1s linear 1.5s infinite reverse,
+    rainbow-swing 0.1s linear 1.5s infinite reverse;
 }
 
 @keyframes background-scroll {
