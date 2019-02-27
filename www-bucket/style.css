@@ -46,7 +46,7 @@ body {
     orbit 0.1s linear 1.5s infinite normal,
     rainbow-swing 0.1s linear 1.5s infinite normal;
   box-sizing: content-box;
-  opacity: 0.01;
+  opacity: 0;
   text-shadow: 0 0 +12px black, 0 +3px 0 var(--electric-red),
     0 +6px 0 var(--dark-orange), 0 +9px 0 var(--canary-yellow),
     0 +12px 0 var(--la-salle-green), 0 +15px 0 var(--blue-ryb),
@@ -70,7 +70,7 @@ body {
 
 @keyframes fade-in {
   from {
-    opacity: 0.01;
+    opacity: 0;
   }
   to {
     opacity: 1;
