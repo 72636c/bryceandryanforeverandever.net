@@ -16,7 +16,7 @@ x-defaults:
 
 steps:
   - name: stage (test)
-    image: 72636c/stratus:latest-alpine
+    image: 72636c/stratus:latest-base
     commands:
       - stratus stage
     environment:
@@ -28,7 +28,7 @@ steps:
         - pull_request
 
   - name: deploy (test)
-    image: 72636c/stratus:latest-alpine
+    image: 72636c/stratus:latest-base
     commands:
       - stratus deploy
     environment:
@@ -52,7 +52,7 @@ steps:
         - pull_request
 
   - name: stage (prod)
-    image: 72636c/stratus:latest-alpine
+    image: 72636c/stratus:latest-base
     commands:
       - stratus stage
     environment:
@@ -64,7 +64,7 @@ steps:
         - pull_request
 
   - name: deploy (prod)
-    image: 72636c/stratus:latest-alpine
+    image: 72636c/stratus:latest-base
     commands:
       - stratus deploy
     environment:
