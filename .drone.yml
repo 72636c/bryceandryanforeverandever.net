@@ -42,8 +42,8 @@ steps:
   - name: sync (test)
     image: 72636c/aws-cli:1
     commands:
-      - aws s3 sync naked-bucket s3://test.bryceandryanforeverandever.net
-      - aws s3 sync www-bucket s3://www.test.bryceandryanforeverandever.net
+      - aws s3 sync --delete naked-bucket s3://test.bryceandryanforeverandever.net
+      - aws s3 sync --delete www-bucket s3://www.test.bryceandryanforeverandever.net
     environment:
       <<: *environment
       ENVIRONMENT: test
@@ -80,8 +80,8 @@ steps:
   - name: sync (prod)
     image: 72636c/aws-cli:1
     commands:
-      - aws s3 sync naked-bucket s3://bryceandryanforeverandever.net
-      - aws s3 sync www-bucket s3://www.bryceandryanforeverandever.net
+      - aws s3 sync --delete naked-bucket s3://bryceandryanforeverandever.net
+      - aws s3 sync --delete www-bucket s3://www.bryceandryanforeverandever.net
     environment:
       <<: *environment
       ENVIRONMENT: prod
@@ -93,4 +93,4 @@ steps:
 
 ---
 kind: signature
-hmac: 335724cbf57b9c042e61c19a453b7f47ccb19b212ca6e4be45d74c77c5d7cb09
+hmac: aa3040696583d8f02736f1600a79bb57250a5bcc300bb9f9b430319a1fdf7e6a
