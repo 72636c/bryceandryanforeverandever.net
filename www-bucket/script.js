@@ -10,6 +10,7 @@ const triggers = [
   'Jive search',
   "Merge branch 'master' into branch",
   'rubber domes',
+  'tri-state Booleans'
 ];
 
 document.getElementById('trigger').innerHTML =
