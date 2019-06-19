@@ -9,6 +9,7 @@ const triggers = [
   'Imperial units',
   'Jive search',
   "Merge branch 'master' into branch",
+  'Okta',
   'rubber domes',
   'tri-state Booleans'
 ];
