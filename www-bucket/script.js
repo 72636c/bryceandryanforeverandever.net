@@ -3,6 +3,7 @@
 const triggers = [
   '/kæɪʃ/',
   '/niːʃ/',
+  '💩',
   'butterfly switches',
   'Docker',
   'hello, world',
