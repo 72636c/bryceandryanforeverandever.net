@@ -22,7 +22,7 @@ const triggers = [
   '541',
   '🦍 warfare',
   'being emailed about the hub',
-  'sausage sizzle',
+  'sausage sandwich',
   'multipart emojis',
   'snapchat',
 ];
