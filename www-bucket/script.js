@@ -18,7 +18,7 @@ const triggers = [
   '9 letter puzzles',
   'proxy cards',
   'items in smash',
-  'being thumbsd down',
+  'being 👎d down',
   '541',
   '🦍 warfare',
   'being emailed about the hub',
