@@ -20,12 +20,11 @@ const triggers = [
   'items in smash',
   'being thumbsd down',
   '541',
-  'gorilla warfare',
+  '🦍 warfare',
   'being emailed about the hub',
   'sausage sizzle',
   'multipart emojis',
   'snapchat',
-  ''
 ];
 
 document.getElementById('trigger').innerHTML =
