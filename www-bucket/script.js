@@ -12,7 +12,19 @@ const triggers = [
   "Merge branch 'master' into branch",
   'Okta',
   'rubber domes',
-  'tri-state Booleans'
+  'tri-state Booleans',
+  'gates in edh',
+  'burgers',
+  '9 letter puzzles',
+  'proxy cards',
+  'items in smash',
+  'being 👎d down',
+  '541',
+  '🦍 warfare',
+  'being emailed about the hub',
+  'sausage sizzle',
+  'multipart emojis',
+  'snapchat',
 ];
 
 document.getElementById('trigger').innerHTML =
