@@ -40,7 +40,7 @@ steps:
         - pull_request
 
   - name: sync (test)
-    image: 72636c/aws-cli:1
+    image: amazon/aws-cli
     commands:
       - aws s3 sync --delete naked-bucket s3://test.bryceandryanforeverandever.net
       - aws s3 sync --delete www-bucket s3://www.test.bryceandryanforeverandever.net
@@ -78,7 +78,7 @@ steps:
         - push
 
   - name: sync (prod)
-    image: 72636c/aws-cli:1
+    image: amazon/aws-cli
     commands:
       - aws s3 sync --delete naked-bucket s3://bryceandryanforeverandever.net
       - aws s3 sync --delete www-bucket s3://www.bryceandryanforeverandever.net
@@ -93,4 +93,4 @@ steps:
 
 ---
 kind: signature
-hmac: aa3040696583d8f02736f1600a79bb57250a5bcc300bb9f9b430319a1fdf7e6a
+hmac: 8135515f30a34df3895dab7abbbfac26c571293a2479ddba502d6d3988098d5e
