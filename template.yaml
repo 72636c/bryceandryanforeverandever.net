@@ -56,7 +56,7 @@ Resources:
             QueryString: false
           LambdaFunctionAssociations:
             - EventType: viewer-request
-              FunctionARN: !GetAtt NakedRedirectFunction.FunctionARN
+              LambdaFunctionARN: !GetAtt NakedRedirectFunction.FunctionARN
           MaxTTL: 0
           TargetOriginId: origin
           ViewerProtocolPolicy: allow-all
@@ -214,7 +214,7 @@ Resources:
             QueryString: false
           LambdaFunctionAssociations:
             - EventType: viewer-request
-              FunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionARN
+              LambdaFunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionARN
           MaxTTL: 0
           TargetOriginId: origin
           ViewerProtocolPolicy: redirect-to-https
