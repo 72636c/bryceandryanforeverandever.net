@@ -51,6 +51,7 @@ Resources:
           - !Ref Environment
           - NakedDomain
         DefaultCacheBehavior:
+          Compress: true
           DefaultTTL: 0
           ForwardedValues:
             QueryString: false
@@ -209,6 +210,7 @@ Resources:
           - !Ref Environment
           - WwwDomain
         DefaultCacheBehavior:
+          Compress: true
           DefaultTTL: 0
           ForwardedValues:
             QueryString: false
