@@ -6,8 +6,12 @@ The award-winning website, now in version control!
 
 ## Setup
 
+This repository presumes prior domain registration via the Route53 Registrar in the AWS Console.
+
+The resulting hosted zone ID is retrieved via script and hardcoded in [stratus.yaml](stratus.yaml):
+
 ```shell
-scripts/request-certificates.sh
+scripts/get-hosted-zone-id.sh
 ```
 
 ## Deployment

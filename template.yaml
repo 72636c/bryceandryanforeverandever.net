@@ -5,14 +5,10 @@ Description: bryceandryanforeverandever.net
 Mappings:
   EnvironmentMap:
     test:
-      NakedCert: arn:aws:acm:us-east-1:349150094378:certificate/e362647e-a677-40cc-ad47-ff4723b9fd28
       NakedDomain: test.bryceandryanforeverandever.net
-      WwwCert: arn:aws:acm:us-east-1:349150094378:certificate/81a2afcb-600f-45c7-bcc2-6af9de8202b1
       WwwDomain: www.test.bryceandryanforeverandever.net
     prod:
       NakedDomain: bryceandryanforeverandever.net
-      NakedCert: arn:aws:acm:us-east-1:349150094378:certificate/97528d68-8693-4091-82d2-60373f5cb19d
-      WwwCert: arn:aws:acm:us-east-1:349150094378:certificate/b88e4596-2c71-4c54-819c-a53e7189bdea
       WwwDomain: www.bryceandryanforeverandever.net
 
 Parameters:
@@ -20,6 +16,9 @@ Parameters:
     AllowedValues:
       - test
       - prod
+    Type: String
+
+  HostedZoneId:
     Type: String
 
 Resources:
@@ -58,6 +57,21 @@ Resources:
         Version: '2012-10-17'
       Bucket: !Ref NakedBucket
 
+  NakedCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !FindInMap
+        - EnvironmentMap
+        - !Ref Environment
+        - NakedDomain
+      DomainValidationOptions:
+        - DomainName: !FindInMap
+            - EnvironmentMap
+            - !Ref Environment
+            - NakedDomain
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+
   NakedDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -93,10 +107,7 @@ Resources:
                 - !GetAtt NakedBucket.WebsiteURL
             Id: origin
         ViewerCertificate:
-          AcmCertificateArn: !FindInMap
-            - EnvironmentMap
-            - !Ref Environment
-            - NakedCert
+          AcmCertificateArn: !Ref NakedCertificate
           SslSupportMethod: sni-only
 
   RecordSetGroup:
@@ -164,6 +175,21 @@ Resources:
         Version: '2012-10-17'
       Bucket: !Ref WwwBucket
 
+  WwwCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !FindInMap
+        - EnvironmentMap
+        - !Ref Environment
+        - WwwDomain
+      DomainValidationOptions:
+        - DomainName: !FindInMap
+            - EnvironmentMap
+            - !Ref Environment
+            - WwwDomain
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+
   WwwDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -199,8 +225,12 @@ Resources:
                 - !GetAtt WwwBucket.WebsiteURL
             Id: origin
         ViewerCertificate:
-          AcmCertificateArn: !FindInMap
-            - EnvironmentMap
-            - !Ref Environment
-            - WwwCert
+          AcmCertificateArn: !Ref WwwCertificate
           SslSupportMethod: sni-only
+
+Outputs:
+  NakedCertificateArn:
+    Value: !Ref NakedCertificate
+
+  WwwCertificateArn:
+    Value: !Ref WwwCertificate

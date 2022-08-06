@@ -5,6 +5,8 @@ stacks:
     parameters:
       - key: Environment
         value: '{{env:ENVIRONMENT}}'
+      - key: HostedZoneId
+        value: Z34PQFRQTB8RPK
     terminationProtection: true
 
     policyFile: ./policy.json
