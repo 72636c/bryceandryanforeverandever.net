@@ -22,41 +22,6 @@ Parameters:
     Type: String
 
 Resources:
-  NakedBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !FindInMap
-        - EnvironmentMap
-        - !Ref Environment
-        - NakedDomain
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        RoutingRules:
-          - RedirectRule:
-              HostName: !FindInMap
-                - EnvironmentMap
-                - !Ref Environment
-                - WwwDomain
-              HttpRedirectCode: 301
-              Protocol: https
-
-  NakedBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action: s3:GetObject
-            Effect: Allow
-            Principal: '*'
-            Resource:
-              Fn::Join:
-                - ''
-                - - 'arn:aws:s3:::'
-                  - Ref: NakedBucket
-                  - /*
-        Version: '2012-10-17'
-      Bucket: !Ref NakedBucket
-
   NakedCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -86,11 +51,13 @@ Resources:
           - !Ref Environment
           - NakedDomain
         DefaultCacheBehavior:
-          DefaultTTL: 0
-          ForwardedValues:
-            QueryString: false
-          MaxTTL: 0
-          TargetOriginId: origin
+          # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policies-list
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          Compress: true
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt NakedRedirectFunction.FunctionMetadata.FunctionARN
+          TargetOriginId: redirectOrigin
           ViewerProtocolPolicy: allow-all
         Enabled: true
         # HttpVersion: http2
@@ -99,16 +66,51 @@ Resources:
         # Logging: {}
         Origins:
           - CustomOriginConfig:
-              OriginProtocolPolicy: http-only
-            DomainName: !Select
-              - 1
-              - !Split
-                - ://
-                - !GetAtt NakedBucket.WebsiteURL
-            Id: origin
+              OriginProtocolPolicy: match-viewer
+            DomainName: !FindInMap
+              - EnvironmentMap
+              - !Ref Environment
+              - WwwDomain
+            Id: redirectOrigin
         ViewerCertificate:
           AcmCertificateArn: !Ref NakedCertificate
           SslSupportMethod: sni-only
+
+  NakedRedirectFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      AutoPublish: true
+      FunctionCode:
+        Fn::Sub:
+          - |
+            function handler(event) {
+              var request = event.request;
+
+              var host = request.headers.host.value;
+
+              if (host === '${NakedDomain}') {
+                // Redirect naked domain to www subdomain.
+                return {
+                  headers: { location: { value: 'https://${WwwDomain}' } },
+                  statusCode: 301,
+                  statusDescription: 'Moved Permanently'
+                };
+              }
+
+              return request;
+            }
+          - NakedDomain: !FindInMap
+              - EnvironmentMap
+              - !Ref Environment
+              - NakedDomain
+            WwwDomain: !FindInMap
+              - EnvironmentMap
+              - !Ref Environment
+              - WwwDomain
+      FunctionConfig:
+        Comment: Redirects from the naked domain to the www subdomain
+        Runtime: cloudfront-js-1.0
+      Name: !Sub ${AWS::StackName}-naked-redirect
 
   RecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
@@ -116,32 +118,32 @@ Resources:
       HostedZoneName: bryceandryanforeverandever.net.
       RecordSets:
         - AliasTarget:
-            HostedZoneId: Z2FDTNDATAQYW2
             DNSName: !GetAtt NakedDistribution.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2
           Name: !FindInMap
             - EnvironmentMap
             - !Ref Environment
             - NakedDomain
           Type: A
         - AliasTarget:
-            HostedZoneId: Z2FDTNDATAQYW2
             DNSName: !GetAtt NakedDistribution.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2
           Name: !FindInMap
             - EnvironmentMap
             - !Ref Environment
             - NakedDomain
           Type: AAAA
         - AliasTarget:
-            HostedZoneId: Z2FDTNDATAQYW2
             DNSName: !GetAtt WwwDistribution.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2
           Name: !FindInMap
             - EnvironmentMap
             - !Ref Environment
             - WwwDomain
           Type: A
         - AliasTarget:
-            HostedZoneId: Z2FDTNDATAQYW2
             DNSName: !GetAtt WwwDistribution.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2
           Name: !FindInMap
             - EnvironmentMap
             - !Ref Environment
@@ -155,25 +157,47 @@ Resources:
         - EnvironmentMap
         - !Ref Environment
         - WwwDomain
-      WebsiteConfiguration:
-        IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
 
   WwwBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       PolicyDocument:
         Statement:
-          - Action: s3:GetObject
+          - Action:
+              - s3:GetObject
+              - s3:ListBucket
             Effect: Allow
-            Principal: '*'
+            Principal:
+              CanonicalUser: !GetAtt WwwOriginAccessIdentity.S3CanonicalUserId
             Resource:
-              Fn::Join:
-                - ''
-                - - 'arn:aws:s3:::'
-                  - Ref: WwwBucket
-                  - /*
+              - !GetAtt WwwBucket.Arn
+              - !Sub ${WwwBucket.Arn}/*
         Version: '2012-10-17'
       Bucket: !Ref WwwBucket
+
+  WwwCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub ${AWS::StackName}-caching-limited
+        Comment: Enables a short cache TTL and compression
+        DefaultTTL: 60
+        MaxTTL: 600
+        MinTTL: 0
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          CookiesConfig:
+            CookieBehavior: none
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: none
 
   WwwCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -204,11 +228,12 @@ Resources:
           - !Ref Environment
           - WwwDomain
         DefaultCacheBehavior:
-          DefaultTTL: 0
-          ForwardedValues:
-            QueryString: false
-          MaxTTL: 0
-          TargetOriginId: origin
+          CachePolicyId: !Ref WwwCachePolicy
+          Compress: true
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionMetadata.FunctionARN
+          TargetOriginId: bucketOrigin
           ViewerProtocolPolicy: redirect-to-https
         Enabled: true
         # HttpVersion: http2
@@ -216,18 +241,48 @@ Resources:
         # IsIPV6Enabled: true
         # Logging: {}
         Origins:
-          - CustomOriginConfig:
-              OriginProtocolPolicy: http-only
-            DomainName: !Select
-              - 1
-              - !Split
-                - ://
-                - !GetAtt WwwBucket.WebsiteURL
-            Id: origin
+          - DomainName: !GetAtt WwwBucket.DomainName
+            Id: bucketOrigin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${WwwOriginAccessIdentity}
         ViewerCertificate:
           AcmCertificateArn: !Ref WwwCertificate
           MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
+
+  WwwIndexHtmlFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+
+          var uri = request.uri;
+
+          if (uri.endsWith('/')) {
+            // URI is missing a filename.
+            request.uri += 'index.html';
+          } else if (!uri.includes('.')) {
+            // URI is missing a file extension.
+            request.uri += '/index.html';
+          }
+
+          return request;
+        }
+      FunctionConfig:
+        Comment: Falls back to the index.html file
+        Runtime: cloudfront-js-1.0
+      Name: !Sub ${AWS::StackName}-www-index-html
+
+  WwwOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !FindInMap
+          - EnvironmentMap
+          - !Ref Environment
+          - WwwDomain
 
 Outputs:
   NakedCertificateArn:
@@ -235,3 +290,6 @@ Outputs:
 
   WwwCertificateArn:
     Value: !Ref WwwCertificate
+
+  WwwS3CanonicalUserId:
+    Value: !GetAtt WwwOriginAccessIdentity.S3CanonicalUserId
