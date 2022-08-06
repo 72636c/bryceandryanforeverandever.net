@@ -226,6 +226,7 @@ Resources:
             Id: origin
         ViewerCertificate:
           AcmCertificateArn: !Ref WwwCertificate
+          MinimumProtocolVersion: TLSv1.2_2021
           SslSupportMethod: sni-only
 
 Outputs:
