@@ -110,7 +110,7 @@ Resources:
       FunctionConfig:
         Comment: Redirects from the naked domain to the www subdomain
         Runtime: cloudfront-js-1.0
-      Name: !Sub ${Environment}-${self:service}-naked-redirect
+      Name: !Sub ${AWS::StackName}-naked-redirect
 
   RecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
@@ -256,7 +256,7 @@ Resources:
       FunctionConfig:
         Comment: Falls back to the index.html file
         Runtime: cloudfront-js-1.0
-      Name: !Sub ${Environment}-${self:service}-www-index-html
+      Name: !Sub ${AWS::StackName}-www-index-html
 
   WwwOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
