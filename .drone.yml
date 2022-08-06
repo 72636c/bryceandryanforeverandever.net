@@ -1,26 +1,23 @@
 ---
 kind: pipeline
+type: docker
 name: default
 
 platform:
   os: linux
   arch: amd64
 
-x-defaults:
-  environment: &environment
-    AWS_ACCESS_KEY_ID:
-      from_secret: aws_access_key_id
-    AWS_REGION: us-east-1
-    AWS_SECRET_ACCESS_KEY:
-      from_secret: aws_secret_access_key
-
 steps:
   - name: stage (test)
     image: 72636c/stratus:base
     commands:
       - stratus stage
-    environment:
-      <<: *environment
+    environment: &test-environment
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
       ENVIRONMENT: test
     pull: always
     when:
@@ -31,9 +28,7 @@ steps:
     image: 72636c/stratus:base
     commands:
       - stratus deploy
-    environment:
-      <<: *environment
-      ENVIRONMENT: test
+    environment: *test-environment
     pull: always
     when:
       event:
@@ -43,9 +38,7 @@ steps:
     image: amazon/aws-cli
     commands:
       - aws s3 sync --delete www-bucket s3://www.test.bryceandryanforeverandever.net
-    environment:
-      <<: *environment
-      ENVIRONMENT: test
+    environment: *test-environment
     when:
       event:
         - pull_request
@@ -54,9 +47,7 @@ steps:
     image: 72636c/stratus:base
     commands:
       - stratus stage
-    environment:
-      <<: *environment
-      ENVIRONMENT: prod
+    environment: *test-environment
     pull: always
     when:
       event:
@@ -66,8 +57,8 @@ steps:
     image: 72636c/stratus:base
     commands:
       - stratus deploy
-    environment:
-      <<: *environment
+    environment: &prod-environment
+      <<: *test-environment
       ENVIRONMENT: prod
     pull: always
     when:
@@ -80,9 +71,7 @@ steps:
     image: amazon/aws-cli
     commands:
       - aws s3 sync --delete www-bucket s3://www.bryceandryanforeverandever.net
-    environment:
-      <<: *environment
-      ENVIRONMENT: prod
+    environment: *prod-environment
     when:
       branch:
         - master
@@ -91,4 +80,4 @@ steps:
 
 ---
 kind: signature
-hmac: 23b1bf97989cf35f956881698b1ff348344f303c8023fb63e6ad74702c0a6fa9
+hmac: 17d474081a47144966617fb6ace6ba825f207837460d4abf454ae042480a0081
