@@ -228,9 +228,9 @@ Resources:
           AcmCertificateArn: !Ref WwwCertificate
           SslSupportMethod: sni-only
 
-  Outputs:
-    NakedCertificateArn:
-      Value: !Ref NakedCertificate
+Outputs:
+  NakedCertificateArn:
+    Value: !Ref NakedCertificate
 
-    WwwCertificateArn:
-      Value: !Ref WwwCertificate
+  WwwCertificateArn:
+    Value: !Ref WwwCertificate
