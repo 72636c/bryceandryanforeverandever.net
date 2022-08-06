@@ -54,9 +54,9 @@ Resources:
           DefaultTTL: 0
           ForwardedValues:
             QueryString: false
-          LambdaFunctionAssociations:
+          FunctionAssociations:
             - EventType: viewer-request
-              LambdaFunctionARN: !GetAtt NakedRedirectFunction.FunctionMetadata.FunctionARN
+              FunctionARN: !GetAtt NakedRedirectFunction.FunctionMetadata.FunctionARN
           MaxTTL: 0
           TargetOriginId: redirectOrigin
           ViewerProtocolPolicy: allow-all
@@ -212,9 +212,9 @@ Resources:
           DefaultTTL: 0
           ForwardedValues:
             QueryString: false
-          LambdaFunctionAssociations:
+          FunctionAssociations:
             - EventType: viewer-request
-              LambdaFunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionMetadata.FunctionARN
+              FunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionMetadata.FunctionARN
           MaxTTL: 0
           TargetOriginId: bucketOrigin
           ViewerProtocolPolicy: redirect-to-https
