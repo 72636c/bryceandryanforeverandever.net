@@ -51,14 +51,12 @@ Resources:
           - !Ref Environment
           - NakedDomain
         DefaultCacheBehavior:
+          # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policies-list
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
           Compress: true
-          DefaultTTL: 0
-          ForwardedValues:
-            QueryString: false
           FunctionAssociations:
             - EventType: viewer-request
               FunctionARN: !GetAtt NakedRedirectFunction.FunctionMetadata.FunctionARN
-          MaxTTL: 0
           TargetOriginId: redirectOrigin
           ViewerProtocolPolicy: allow-all
         Enabled: true
@@ -182,6 +180,25 @@ Resources:
         Version: '2012-10-17'
       Bucket: !Ref WwwBucket
 
+  WwwCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub ${AWS::StackName}-caching-limited
+        Comment: Enables a short cache TTL and compression
+        DefaultTTL: 60
+        MaxTTL: 600
+        MinTTL: 0
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          CookiesConfig:
+            CookieBehavior: none
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: none
+
   WwwCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -211,14 +228,11 @@ Resources:
           - !Ref Environment
           - WwwDomain
         DefaultCacheBehavior:
+          CachePolicyId: !Ref WwwCachePolicy
           Compress: true
-          DefaultTTL: 0
-          ForwardedValues:
-            QueryString: false
           FunctionAssociations:
             - EventType: viewer-request
               FunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionMetadata.FunctionARN
-          MaxTTL: 0
           TargetOriginId: bucketOrigin
           ViewerProtocolPolicy: redirect-to-https
         Enabled: true
