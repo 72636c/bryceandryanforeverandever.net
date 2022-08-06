@@ -21,7 +21,6 @@ scripts/get-hosted-zone-id.sh
 ```shell
 AWS_REGION=us-east-1 ENVIRONMENT=test stratus deploy
 
-aws s3 sync --delete naked-bucket s3://test.bryceandryanforeverandever.net
 aws s3 sync --delete www-bucket s3://www.test.bryceandryanforeverandever.net
 ```
 
@@ -30,6 +29,5 @@ aws s3 sync --delete www-bucket s3://www.test.bryceandryanforeverandever.net
 ```shell
 AWS_REGION=us-east-1 ENVIRONMENT=prod stratus deploy
 
-aws s3 sync --delete naked-bucket s3://bryceandryanforeverandever.net
 aws s3 sync --delete www-bucket s3://www.bryceandryanforeverandever.net
 ```
