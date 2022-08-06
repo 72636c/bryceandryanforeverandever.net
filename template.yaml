@@ -94,7 +94,8 @@ Resources:
                 // Redirect naked domain to www subdomain.
                 return {
                   headers: { location: { value: 'https://${WwwDomain}' } },
-                  statusCode: 301
+                  statusCode: 301,
+                  statusDescription: 'Moved Permanently'
                 };
               }
 
