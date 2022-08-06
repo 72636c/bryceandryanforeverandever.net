@@ -77,7 +77,7 @@ Resources:
             QueryString: false
           MaxTTL: 0
           TargetOriginId: origin
-          ViewerProtocolPolicy: redirect-to-https
+          ViewerProtocolPolicy: allow-all
         Enabled: true
         # HttpVersion: http2
         # IPV6Enabled: true
