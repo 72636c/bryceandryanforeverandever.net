@@ -58,7 +58,7 @@ Resources:
             - EventType: viewer-request
               LambdaFunctionARN: !GetAtt NakedRedirectFunction.FunctionARN
           MaxTTL: 0
-          TargetOriginId: origin
+          TargetOriginId: redirectOrigin
           ViewerProtocolPolicy: allow-all
         Enabled: true
         # HttpVersion: http2
@@ -216,7 +216,7 @@ Resources:
             - EventType: viewer-request
               LambdaFunctionARN: !GetAtt WwwIndexHtmlFunction.FunctionARN
           MaxTTL: 0
-          TargetOriginId: origin
+          TargetOriginId: bucketOrigin
           ViewerProtocolPolicy: redirect-to-https
         Enabled: true
         # HttpVersion: http2
