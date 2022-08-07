@@ -47,7 +47,9 @@ steps:
     image: 72636c/stratus:base
     commands:
       - stratus stage
-    environment: *test-environment
+    environment: &prod-environment
+      <<: *test-environment
+      ENVIRONMENT: prod
     pull: always
     when:
       event:
@@ -57,9 +59,7 @@ steps:
     image: 72636c/stratus:base
     commands:
       - stratus deploy
-    environment: &prod-environment
-      <<: *test-environment
-      ENVIRONMENT: prod
+    environment: *prod-environment
     pull: always
     when:
       branch:
@@ -80,4 +80,4 @@ steps:
 
 ---
 kind: signature
-hmac: 17d474081a47144966617fb6ace6ba825f207837460d4abf454ae042480a0081
+hmac: af36f06a20862aa4c934f88d8d079507edf103050fee2622345e4f058f63d017
